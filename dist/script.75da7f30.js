@@ -39032,73 +39032,72 @@ cursor.y = 0;
 window.addEventListener('mousemove', function (_event) {
   cursor.x = _event.clientX / sizes.width - 0.5;
   cursor.y = _event.clientY / sizes.height - 0.5;
+}); //Keyboard
+
+var keyboard = {};
+keyboard.up = false;
+keyboard.right = false;
+keyboard.down = false;
+keyboard.left = false;
+keyboard.speed = false;
+document.addEventListener('keydown', function (event) {
+  switch (event.code) {
+    case 'KeyW':
+    case 'ArrowUp':
+      keyboard.up = true;
+      break;
+
+    case 'KeyD':
+    case 'ArrowRight':
+      keyboard.right = true;
+      break;
+
+    case 'KeyS':
+    case 'ArrowDown':
+      keyboard.down = true;
+      break;
+
+    case 'KeyA':
+    case 'ArrowLeft':
+      keyboard.left = true;
+      break;
+
+    case 'KeyQ':
+      keyboard.speed = true;
+      break;
+  }
+
+  ;
 });
-/**
- * Keyboard
+document.addEventListener('keyup', function (event) {
+  switch (event.code) {
+    case 'KeyW':
+    case 'ArrowUp':
+      keyboard.up = false;
+      break;
 
-const keyboard = {};
-    keyboard.up = false;
-    keyboard.right = false;
-    keyboard.down = false;
-    keyboard.left = false;
-    keyboard.speed = false
+    case 'KeyD':
+    case 'ArrowRight':
+      keyboard.right = false;
+      break;
 
-document.addEventListener('keydown', (event) => {
-    switch (event.code) {
-        case 'KeyW':
-        case 'ArrowUp':
-            keyboard.up = true;
-            break;
+    case 'KeyS':
+    case 'ArrowDown':
+      keyboard.down = false;
+      break;
 
-        case 'KeyD':
-        case 'ArrowRight':
-            keyboard.right = true;
-            break;
+    case 'KeyA':
+    case 'ArrowLeft':
+      keyboard.left = false;
+      break;
 
-        case 'KeyS':
-        case 'ArrowDown':
-            keyboard.down = true;
-            break;
+    case 'KeyQ':
+      keyboard.speed = false;
+      break;
+  }
 
-        case 'KeyA':
-        case 'ArrowLeft':
-            keyboard.left = true;
-            break;
-
-        case 'KeyQ':
-            keyboard.speed = true;
-            break;
-    };
+  ;
 });
-
-document.addEventListener('keyup', (event) => {
-    switch (event.code) {
-        case 'KeyW':
-        case 'ArrowUp':
-            keyboard.up = false
-            break;
-
-        case 'KeyD':
-        case 'ArrowRight':
-            keyboard.right = false
-            break;
-
-        case 'KeyS':
-        case 'ArrowDown':
-            keyboard.down = false
-            break;
-
-        case 'KeyA':
-        case 'ArrowLeft':
-            keyboard.left = false
-            break;
-
-        case 'KeyQ':
-            keyboard.speed = false;
-            break;
-    };
-});*/
-
 /**
  * Camera
  */
@@ -39118,15 +39117,19 @@ document.body.appendChild(renderer.domElement);
 /**
  Orbit controls*/
 
-var controls = new _OrbitControls.OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.zoomSpeed = 0.3;
+/*const controls = new OrbitControls(camera, renderer.domElement)
+controls.enableDamping = true
+controls.zoomSpeed = 0.3*/
+
 /**
  * Lights
  */
 
 var ambientLight = new THREE.AmbientLight(0xffcccc, 0.2);
-scene.add(ambientLight); // Sun
+scene.add(ambientLight);
+var sunRectAreaLight = new THREE.RectAreaLight(0xffcccc, 100, 200, 1, 0, 30);
+sunRectAreaLight.position.z = -60;
+scene.add(sunRectAreaLight); // Sun
 
 var sunLight = new THREE.DirectionalLight(0xffcccc, 1);
 sunLight.position.x = 10;
@@ -39138,11 +39141,12 @@ scene.add(sunLight);
  */
 // MaterialFloor
 
-var materialFloor = new THREE.MeshStandardMaterial({
-  roughness: 0.3,
-  metalness: 0.3,
-  opacity: 0.2
-}); // MaterialStars
+/*const materialFloor = new THREE.MeshStandardMaterial({
+    roughness: 0.3,
+    metalness: 0.3,
+    opacity: 0.2,
+});*/
+// MaterialStars
 
 var starMaterial = new THREE.PointsMaterial({
   size: 0.1,
@@ -39172,33 +39176,41 @@ var starGeometry = new THREE.Geometry(); //Build Reactor
 
 var reactorGeometry = new THREE.Geometry(); // Build floorPlane
 
-var floor = new THREE.Mesh(new THREE.PlaneGeometry(100, 100, 1000, 1), materialFloor);
-floor.rotation.x = -Math.PI * 0.5;
-scene.add(floor);
-/*
+/*const floor = new THREE.Mesh(new THREE.PlaneGeometry(100, 100, 1000, 1), materialFloor);
+    floor.rotation.x = - Math.PI * 0.5;
+scene.add(floor);*/
 // Build Life
-const life = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 0.3, 0.5, 1, 1, 1),
-)
-    life.position.y = 8
-    life.position.z = 50
-    life.position.x = 1.5
-    scene.add(life)
-*/
-// Sun
+
+var lifeGroup = new THREE.Group();
+var life = new THREE.Mesh(new THREE.BoxGeometry(1, 0.3, 0.2));
+life.position.y = 3.33;
+life.position.z = 45;
+life.position.x = 1.5;
+scene.add(life);
+var life1 = new THREE.Mesh(new THREE.BoxGeometry(1, 0.3, 0.2));
+life1.position.y = 3.33;
+life1.position.z = 45;
+life1.position.x = 2.5;
+scene.add(life1);
+var life3 = new THREE.Mesh(new THREE.BoxGeometry(1, 0.3, 0.2));
+life3.position.y = 3.33;
+life3.position.z = 45;
+life3.position.x = 1.5;
+scene.add(life3); // Sun
 
 var sun = new THREE.Mesh(new THREE.SphereGeometry(5, 64, 64), new THREE.MeshStandardMaterial({
   map: sunColorTexture,
   normalMap: sunNormalTexture
 }));
-sun.position.z = 20;
-sun.position.y = 6;
+sun.position.z = -100;
+sun.position.y = 15;
+sun.position.x = -10;
 scene.add(sun);
 var sunGeometry = new THREE.Geometry();
 
 for (var i = 0; i < 30000; i++) {
   //let angle = Math.random() * Math.PI *2;
-  var radius = Math.random() * 5 + 0.4;
+  var radius = Math.random() * 5 + 0.5;
   var x = Math.random() - 0.5;
   var y = Math.random() - 0.5;
   var z = Math.random() - 0.5;
@@ -39208,16 +39220,18 @@ for (var i = 0; i < 30000; i++) {
 }
 
 var sunMaterial = new THREE.PointsMaterial({
-  size: 0.1,
+  size: 0.02,
   VertexColors: true,
-  transparent: true
+  transparent: true,
+  color: new THREE.Color(0xFDB813)
 });
 var sunParticle = new THREE.Points(sunGeometry, sunMaterial);
-sunParticle.position.z = 20;
-sunParticle.position.y = 6;
+sunParticle.position.z = -100;
+sunParticle.position.y = 15;
+sunParticle.position.x = -10;
 scene.add(sunParticle); // GeometryStars
 
-for (var _i = 0; _i < 50000; _i++) {
+for (var _i = 0; _i < 30000; _i++) {
   var _vertice2 = new THREE.Vector3(Math.random() * 100 - 50, Math.random() * 20, (Math.random() - 0.5) * 100);
 
   starGeometry.vertices.push(_vertice2);
@@ -39256,7 +39270,7 @@ scene.add(reactor);
  */
 // Spawn in map
 
-var asteroidPosition = (Math.random() - 0.5) * 100; //Aray for moove in loop
+var asteroidPosition = (Math.random() - 0.5) * 20; //Aray for moove in loop
 
 var asteroidArray = [];
 
@@ -39269,7 +39283,7 @@ for (var _i3 = 0; _i3 < 80; _i3++) {
   asteroid.mesh.position.x = asteroidPosition;
   asteroid.mesh.position.y = (Math.random() + 0.5) * 10;
   asteroid.mesh.position.z = -20 * (Math.random() + 0.5) * 10;
-  asteroidPosition = (Math.random() - 0.5) * 100;
+  asteroidPosition = (Math.random() - 0.5) * 30;
   asteroidArray.push(asteroid);
   scene.add(asteroid.mesh);
 } //Load model
@@ -39311,7 +39325,7 @@ var loop = function loop() {
   var s = 0;
   var m = 0;
 
-  for (var _i4 = 0; _i4 < 59; _i4++) {
+  for (var _i4 = 0; _i4 < elapsedTime; _i4++) {
     if (ms >= 1000) {
       s += 1;
       ms -= 1000;
@@ -39326,59 +39340,52 @@ var loop = function loop() {
 
 
   var time = document.querySelector(".timer");
-  time.textContent = m + ' minutes et ' + s; // Moove SpaceShip
+  time.textContent = m + ' minutes et ' + s + ' sec'; // Moove SpaceShip
 
   if (spaceshipGroup.position.z < 41) {
     camera.position.z + 1;
-  }
-  /**
-   * Control Mooves
-  
-  
+  } //Control Mooves
   //Up
+
+
   if (keyboard.up) {
-      spaceshipGroup.position.y += 0.1;
-      spaceshipGroup.rotation.x += 0.02
-  
-      //Rotation Up
-      if (spaceshipGroup.rotation.x > + 0.4) {
-          spaceshipGroup.rotation.x = + 0.4
-      }
-  }
-  
-  //Right
+    spaceshipGroup.position.y += 0.1;
+    spaceshipGroup.rotation.x += 0.02; //Rotation Up
+
+    if (spaceshipGroup.rotation.x > +0.4) {
+      spaceshipGroup.rotation.x = +0.4;
+    }
+  } //Right
+
+
   if (keyboard.right) {
-      spaceshipGroup.position.x += 0.1;
-      spaceshipGroup.rotation.z -= 0.03;
-  
-      //Rotation right
-      if (spaceshipGroup.rotation.z < - 0.4) {
-          spaceshipGroup.rotation.z = - 0.4
-      }
-  }
-  
-  //Down
+    spaceshipGroup.position.x += 0.1;
+    spaceshipGroup.rotation.z -= 0.03; //Rotation right
+
+    if (spaceshipGroup.rotation.z < -0.4) {
+      spaceshipGroup.rotation.z = -0.4;
+    }
+  } //Down
+
+
   if (keyboard.down) {
-      spaceshipGroup.position.y -= 0.1;
-      spaceshipGroup.rotation.x -= 0.03;
-  
-      //Rotation Down
-      if (spaceshipGroup.rotation.x < - 0.4) {
-          spaceshipGroup.rotation.x = - 0.4
-      }
-  }
-  
-  //Left
+    spaceshipGroup.position.y -= 0.1;
+    spaceshipGroup.rotation.x -= 0.03; //Rotation Down
+
+    if (spaceshipGroup.rotation.x < -0.4) {
+      spaceshipGroup.rotation.x = -0.4;
+    }
+  } //Left
+
+
   if (keyboard.left) {
-      spaceshipGroup.position.x -= 0.1;
-      spaceshipGroup.rotation.z += 0.03;
-  
-      //Rotation left
-      if (spaceshipGroup.rotation.z > + 0.4) {
-          spaceshipGroup.rotation.z = + 0.4;
-      }
-  }*/
-  // SpaceShip come back
+    spaceshipGroup.position.x -= 0.1;
+    spaceshipGroup.rotation.z += 0.03; //Rotation left
+
+    if (spaceshipGroup.rotation.z > +0.4) {
+      spaceshipGroup.rotation.z = +0.4;
+    }
+  } // SpaceShip come back
 
 
   spaceshipGroup.position.z += 0.1;
@@ -39397,13 +39404,13 @@ var loop = function loop() {
   } //Block Right
 
 
-  if (spaceshipGroup.position.x > 43) {
-    spaceshipGroup.position.x = 43;
+  if (spaceshipGroup.position.x > 14) {
+    spaceshipGroup.position.x = 14;
   } //Block left
 
 
-  if (spaceshipGroup.position.x < -42) {
-    spaceshipGroup.position.x = -42;
+  if (spaceshipGroup.position.x < -14) {
+    spaceshipGroup.position.x = -14;
   } //Block Up
 
 
@@ -39414,7 +39421,7 @@ var loop = function loop() {
 
   if (spaceshipGroup.position.y < 2) {
     spaceshipGroup.position.y = 2;
-  } // Update star
+  } //Update Sun
 
 
   var _iteratorNormalCompletion = true;
@@ -39422,13 +39429,9 @@ var loop = function loop() {
   var _iteratorError = undefined;
 
   try {
-    for (var _iterator = starGeometry.vertices[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      var _vertice = _step.value;
-      _vertice.z += 0.3;
-
-      if (_vertice.z > 60) {
-        _vertice.z = -50;
-      }
+    for (var _iterator = sunGeometry.vertices[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var _vertice4 = _step.value;
+      _vertice4.y += Math.sin(Date.now() * 0.001 + _vertice4.x * 1000) * 0.01;
     }
   } catch (err) {
     _didIteratorError = true;
@@ -39445,21 +39448,19 @@ var loop = function loop() {
     }
   }
 
-  starGeometry.verticesNeedUpdate = true; // Update reactor
+  sunGeometry.verticesNeedUpdate = true; // Update star
 
   var _iteratorNormalCompletion2 = true;
   var _didIteratorError2 = false;
   var _iteratorError2 = undefined;
 
   try {
-    for (var _iterator2 = reactorGeometry.vertices[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-      var _vertice4 = _step2.value;
-      _vertice4.y -= 0.02;
-      reactorGeometry.x -= 1;
-      reactorGeometry.z -= 1;
+    for (var _iterator2 = starGeometry.vertices[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+      var _vertice = _step2.value;
+      _vertice.z += 0.3;
 
-      if (_vertice4.y < -0.3) {
-        _vertice4.y = 0.2;
+      if (_vertice.z > 60) {
+        _vertice.z = -50;
       }
     }
   } catch (err) {
@@ -39477,18 +39478,55 @@ var loop = function loop() {
     }
   }
 
+  starGeometry.verticesNeedUpdate = true; // Update reactor
+
+  var _iteratorNormalCompletion3 = true;
+  var _didIteratorError3 = false;
+  var _iteratorError3 = undefined;
+
+  try {
+    for (var _iterator3 = reactorGeometry.vertices[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+      var _vertice5 = _step3.value;
+      _vertice5.y -= 0.02;
+      reactorGeometry.x -= 1;
+      reactorGeometry.z -= 1;
+
+      if (_vertice5.y < -0.3) {
+        _vertice5.y = 0.2;
+      }
+    }
+  } catch (err) {
+    _didIteratorError3 = true;
+    _iteratorError3 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+        _iterator3.return();
+      }
+    } finally {
+      if (_didIteratorError3) {
+        throw _iteratorError3;
+      }
+    }
+  }
+
   reactorGeometry.verticesNeedUpdate = true; // Update Asteroids
 
   for (var _i5 = 0; _i5 < asteroidArray.length; _i5++) {
-    asteroidArray[_i5].mesh.position.z += 0.1;
+    asteroidArray[_i5].mesh.position.z += speedAsteroid;
 
     if (asteroidArray[_i5].mesh.position.z > 60) {
       asteroidArray[_i5].mesh.position.z = -50;
-      speedAsteroid *= 1;
     }
 
     if (asteroidArray[_i5].mesh.position.distanceTo(spaceshipGroup.position) < 2.3) {
-      scene.remove(asteroidArray[_i5].mesh); //scene.remove(life)
+      scene.remove(asteroidArray[_i5].mesh);
+      scene.remove(life3);
+    }
+
+    if (asteroidArray[_i5].mesh.position.distanceTo(spaceshipGroup.position) < 2.3) {
+      scene.remove(asteroidArray[_i5].mesh);
+      scene.remove(life1);
     }
     /*
     // speed asteroid
@@ -39499,17 +39537,26 @@ var loop = function loop() {
 
   }
 
+  speedAsteroid *= 1.00000000002;
   window.requestAnimationFrame(loop); // Update controls
+  //controls.update()
 
-  controls.update();
   /**
    * Camera follow spaceShip
    */
 
-  /*camera.position.x += (spaceshipGroup.position.x - camera.position.x) / 10
-  camera.position.y += (spaceshipGroup.position.y - camera.position.y) / 10
-  camera.position.z += (spaceshipGroup.position.z  + 10 - camera.position.z) / 10*/
-  // Render
+  camera.position.x += (spaceshipGroup.position.x - camera.position.x) / 10;
+  camera.position.y += (spaceshipGroup.position.y - camera.position.y) / 10;
+  camera.position.z += (spaceshipGroup.position.z + 10 - camera.position.z) / 10;
+  life.position.x += (spaceshipGroup.position.x - 6.5 - life.position.x) / 10;
+  life.position.y += (spaceshipGroup.position.y - 3 - life.position.y) / 10;
+  life.position.z += (spaceshipGroup.position.z + 5 - life.position.z) / 10;
+  life1.position.x += (spaceshipGroup.position.x - 5 - life1.position.x) / 10;
+  life1.position.y += (spaceshipGroup.position.y - 3 - life1.position.y) / 10;
+  life1.position.z += (spaceshipGroup.position.z + 5 - life1.position.z) / 10;
+  life3.position.x += (spaceshipGroup.position.x - 3.5 - life3.position.x) / 10;
+  life3.position.y += (spaceshipGroup.position.y - 3 - life3.position.y) / 10;
+  life3.position.z += (spaceshipGroup.position.z + 5 - life3.position.z) / 10; // Render
 
   renderer.render(scene, camera);
 };

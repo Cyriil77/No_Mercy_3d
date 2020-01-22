@@ -86,8 +86,7 @@ window.addEventListener('mousemove', (_event) => {
 });
 
 
-/**
- * Keyboard
+//Keyboard
 
 const keyboard = {};
     keyboard.up = false;
@@ -150,7 +149,7 @@ document.addEventListener('keyup', (event) => {
             keyboard.speed = false;
             break;
     };
-});*/
+});
 
 
 /**
@@ -173,15 +172,21 @@ const renderer = new THREE.WebGLRenderer();
 /**
  Orbit controls*/
 
-    const controls = new OrbitControls(camera, renderer.domElement)
+    /*const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
-    controls.zoomSpeed = 0.3
+    controls.zoomSpeed = 0.3*/
 
 /**
  * Lights
  */
 const ambientLight = new THREE.AmbientLight(0xffcccc, 0.2);
 scene.add(ambientLight);
+
+const sunRectAreaLight = new THREE.RectAreaLight(0xffcccc, 100, 200, 1, 0, 30);
+sunRectAreaLight.position.z = -60
+scene.add(sunRectAreaLight);
+
+
 
 // Sun
 const sunLight = new THREE.DirectionalLight(0xffcccc, 1);
@@ -196,11 +201,11 @@ scene.add(sunLight);
  */
 
 // MaterialFloor
-const materialFloor = new THREE.MeshStandardMaterial({
+/*const materialFloor = new THREE.MeshStandardMaterial({
     roughness: 0.3,
     metalness: 0.3,
     opacity: 0.2,
-});
+});*/
 
 
 // MaterialStars
@@ -240,20 +245,33 @@ const starGeometry = new THREE.Geometry();
 const reactorGeometry = new THREE.Geometry();
 
 // Build floorPlane
-const floor = new THREE.Mesh(new THREE.PlaneGeometry(100, 100, 1000, 1), materialFloor);
+/*const floor = new THREE.Mesh(new THREE.PlaneGeometry(100, 100, 1000, 1), materialFloor);
     floor.rotation.x = - Math.PI * 0.5;
-scene.add(floor);
+scene.add(floor);*/
 
-/*
+
 // Build Life
-const life = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 0.3, 0.5, 1, 1, 1),
-)
-    life.position.y = 8
-    life.position.z = 50
-    life.position.x = 1.5
+
+const lifeGroup = new THREE.Group()
+
+const life = new THREE.Mesh(new THREE.BoxGeometry(1, 0.3, 0.2))
+    life.position.y = 3.33;
+    life.position.z = 45;
+    life.position.x = 1.5;
     scene.add(life)
-*/
+
+const life1 = new THREE.Mesh(new THREE.BoxGeometry(1, 0.3, 0.2))
+    life1.position.y = 3.33;
+    life1.position.z = 45;
+    life1.position.x = 2.5;
+    scene.add(life1);
+
+const life3 = new THREE.Mesh(new THREE.BoxGeometry(1, 0.3, 0.2))
+    life3.position.y = 3.33;
+    life3.position.z = 45;
+    life3.position.x = 1.5;
+    scene.add(life3);
+
 
 
 
@@ -265,8 +283,9 @@ const sun = new THREE.Mesh(
         normalMap: sunNormalTexture,
     })
 )
-    sun.position.z = 20;
-    sun.position.y = 6;
+    sun.position.z = -100;
+    sun.position.y = 15;
+    sun.position.x = -10
 scene.add(sun);
 
 const sunGeometry = new THREE.Geometry();
@@ -274,7 +293,7 @@ const sunGeometry = new THREE.Geometry();
 for (let i = 0; i < 30000; i++) {
     
     //let angle = Math.random() * Math.PI *2;
-    let radius = Math.random() * 5 +0.4;
+    let radius = Math.random() * 5 + 0.5;
 
     const x = Math.random() - 0.5;
     const y = Math.random() - 0.5;
@@ -286,20 +305,22 @@ for (let i = 0; i < 30000; i++) {
 }
 
 const sunMaterial = new THREE.PointsMaterial({
-    size: 0.1,
+    size: 0.02,
     VertexColors: true,
     transparent: true,
+    color: new THREE.Color(0xFDB813)
 })
 
 const sunParticle = new THREE.Points(sunGeometry, sunMaterial);
-sunParticle.position.z = 20
-sunParticle.position.y = 6
+sunParticle.position.z = -100
+sunParticle.position.y = 15
+sunParticle.position.x = -10
 scene.add(sunParticle);
 
 
 
 // GeometryStars
-for (let i = 0; i < 50000; i++) {
+for (let i = 0; i < 30000; i++) {
     const vertice = new THREE.Vector3(
         Math.random() * 100 - 50,
         Math.random() * 20,
@@ -347,7 +368,7 @@ scene.add(reactor);
  */
 
 // Spawn in map
-let asteroidPosition = (Math.random() - 0.5) * 100;
+let asteroidPosition = (Math.random() - 0.5) * 20;
 
 //Aray for moove in loop
 let asteroidArray = [];
@@ -364,7 +385,7 @@ for (let i = 0; i < 80; i++) {
         asteroid.mesh.position.x = asteroidPosition;
         asteroid.mesh.position.y = (Math.random() + 0.5) * 10;
         asteroid.mesh.position.z = -20 * (Math.random() + 0.5) * 10;
-        asteroidPosition = (Math.random() - 0.5) * 100;
+        asteroidPosition = (Math.random() - 0.5) * 30;
         asteroidArray.push(asteroid);
     scene.add(asteroid.mesh);
 }
@@ -429,7 +450,8 @@ let ms = elapsedTime
 let s = 0
 let m = 0
 
-for (let i = 0; i < 59; i++) {
+for (let i = 0; i < elapsedTime; i++) {
+    
     if (ms >= 1000) {
         s +=1
         ms -= 1000 
@@ -446,15 +468,15 @@ for (let i = 0; i < 59; i++) {
 
 // Write Time
 let time = document.querySelector(".timer")
-time.textContent = m + ' minutes et ' + s
+time.textContent = m + ' minutes et ' + s + ' sec'
 
     // Moove SpaceShip
     if (spaceshipGroup.position.z < 41) {
         camera.position.z + 1
     }
 
-/**
- * Control Mooves
+
+//Control Mooves
 
 
 //Up
@@ -499,7 +521,7 @@ if (keyboard.left) {
     if (spaceshipGroup.rotation.z > + 0.4) {
         spaceshipGroup.rotation.z = + 0.4;
     }
-}*/
+}
 
 // SpaceShip come back
 spaceshipGroup.position.z += 0.1
@@ -520,13 +542,13 @@ if (spaceshipGroup.position.z > 46) {
 }
 
 //Block Right
-if (spaceshipGroup.position.x > 43) {
-    spaceshipGroup.position.x = 43
+if (spaceshipGroup.position.x > 14) {
+    spaceshipGroup.position.x = 14
 }
 
 //Block left
-if (spaceshipGroup.position.x < -42) {
-    spaceshipGroup.position.x = -42
+if (spaceshipGroup.position.x < -14) {
+    spaceshipGroup.position.x = -14
 }
 
 //Block Up
@@ -540,8 +562,11 @@ if (spaceshipGroup.position.y < 2) {
 }
 
 
-
-
+//Update Sun
+for(const vertice of sunGeometry.vertices){
+    vertice.y += Math.sin(Date.now() * 0.001 + vertice.x*1000 ) * 0.01
+}
+sunGeometry.verticesNeedUpdate = true
 
 // Update star
 for (const _vertice of starGeometry.vertices) {
@@ -567,15 +592,20 @@ reactorGeometry.verticesNeedUpdate = true;
 
 // Update Asteroids
 for (let i = 0; i < asteroidArray.length; i++) {
-    asteroidArray[i].mesh.position.z += 0.1;
+    asteroidArray[i].mesh.position.z += speedAsteroid;
+
     if (asteroidArray[i].mesh.position.z > 60) {
         asteroidArray[i].mesh.position.z = -50;
-        speedAsteroid *= 1
     }
 
     if (asteroidArray[i].mesh.position.distanceTo(spaceshipGroup.position) < 2.3) {
         scene.remove(asteroidArray[i].mesh)
-        //scene.remove(life)
+        scene.remove(life3)
+    }
+
+    if (asteroidArray[i].mesh.position.distanceTo(spaceshipGroup.position) < 2.3) {
+        scene.remove(asteroidArray[i].mesh)
+        scene.remove(life1)
     }
 
     /*
@@ -586,17 +616,32 @@ for (let i = 0; i < asteroidArray.length; i++) {
     }*/
 }
 
+speedAsteroid *= 1.00000000002
+
 window.requestAnimationFrame(loop);
 
 // Update controls
-controls.update()
+//controls.update()
 
 /**
  * Camera follow spaceShip
  */
-/*camera.position.x += (spaceshipGroup.position.x - camera.position.x) / 10
+camera.position.x += (spaceshipGroup.position.x - camera.position.x) / 10
 camera.position.y += (spaceshipGroup.position.y - camera.position.y) / 10
-camera.position.z += (spaceshipGroup.position.z  + 10 - camera.position.z) / 10*/
+camera.position.z += (spaceshipGroup.position.z  + 10 - camera.position.z) / 10
+
+
+life.position.x += (spaceshipGroup.position.x - 6.5 - life.position.x) / 10
+life.position.y += (spaceshipGroup.position.y - 3 - life.position.y) / 10
+life.position.z += (spaceshipGroup.position.z  + 5 - life.position.z) / 10
+
+life1.position.x += (spaceshipGroup.position.x - 5 - life1.position.x) / 10
+life1.position.y += (spaceshipGroup.position.y - 3 - life1.position.y) / 10
+life1.position.z += (spaceshipGroup.position.z  + 5 - life1.position.z) / 10
+
+life3.position.x += (spaceshipGroup.position.x - 3.5 - life3.position.x) / 10
+life3.position.y += (spaceshipGroup.position.y - 3 - life3.position.y) / 10
+life3.position.z += (spaceshipGroup.position.z  + 5 - life3.position.z) / 10
 
 // Render
 renderer.render(scene, camera);
